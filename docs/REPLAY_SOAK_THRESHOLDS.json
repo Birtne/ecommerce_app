@@ -1,0 +1,25 @@
+{
+  "anomaly_thresholds": {
+    "timeout": 12,
+    "cancel": 12,
+    "partial": 24
+  },
+  "scenario_thresholds": {
+    "replay_multi_job_command_conflict": {
+      "latency_multiplier": {
+        "request_p95_ms": 1.25,
+        "request_p99_ms": 1.35,
+        "process_p95_ms": 1.35,
+        "process_p99_ms": 1.45
+      }
+    },
+    "replay_multi_worker_soak": {
+      "latency_multiplier": {
+        "request_p95_ms": 1.3,
+        "request_p99_ms": 1.4,
+        "process_p95_ms": 1.4,
+        "process_p99_ms": 1.5
+      }
+    }
+  }
+}
