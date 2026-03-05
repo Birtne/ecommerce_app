@@ -1,0 +1,53 @@
+{
+  "title": "Ecommerce Backend SLO",
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "30s",
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Order Success Rate (5m)",
+      "targets": [
+        {
+          "expr": "sum(rate(ecommerce_order_place_requests_total{result=\"ok\"}[5m])) / clamp_min(sum(rate(ecommerce_order_place_requests_total[5m])), 0.001)",
+          "legendFormat": "success_rate"
+        }
+      ],
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
+    },
+    {
+      "type": "timeseries",
+      "title": "Outbox Oldest Pending Age (s)",
+      "targets": [
+        {
+          "expr": "ecommerce_outbox_runtime{metric=\"oldest_pending_age_seconds\"}",
+          "legendFormat": "oldest_pending_age"
+        }
+      ],
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
+    },
+    {
+      "type": "timeseries",
+      "title": "Dead Letter Backlog",
+      "targets": [
+        {
+          "expr": "ecommerce_outbox_events{status=\"dead_letter_rows\"}",
+          "legendFormat": "dlq_rows"
+        }
+      ],
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+    },
+    {
+      "type": "timeseries",
+      "title": "Replay Job Throughput",
+      "targets": [
+        {
+          "expr": "rate(ecommerce_outbox_publish_total{result=\"sent\"}[5m])",
+          "legendFormat": "outbox_sent_per_sec"
+        }
+      ],
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+    }
+  ]
+}
