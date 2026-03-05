@@ -1,0 +1,35 @@
+route:
+  receiver: default-chat
+  group_by: [alertname, service, severity]
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 2h
+  routes:
+    - matchers:
+        - severity="critical"
+        - service="ecommerce-backend"
+      receiver: pager-duty
+      continue: true
+    - matchers:
+        - severity="warning"
+        - service="ecommerce-backend"
+      receiver: default-chat
+
+receivers:
+  - name: default-chat
+    webhook_configs:
+      - url: http://alert-webhook.local/team-chat
+        send_resolved: true
+
+  - name: pager-duty
+    pagerduty_configs:
+      - routing_key: REPLACE_WITH_REAL_KEY
+        severity: critical
+        send_resolved: true
+
+inhibit_rules:
+  - source_matchers:
+      - severity="critical"
+    target_matchers:
+      - severity="warning"
+    equal: [alertname, service]
