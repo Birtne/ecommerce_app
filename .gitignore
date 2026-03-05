@@ -1,0 +1,15 @@
+**/node_modules
+**/dist
+**/.env
+**/.DS_Store
+
+# frontend generated artifacts
+frontend/*.tsbuildinfo
+frontend/vite.config.js
+frontend/vite.config.d.ts
+
+# backend local binaries
+backend/server
+backend/server.bin.build-artifact
+
+.git.nested.backup/
