@@ -1,0 +1,61 @@
+groups:
+  - name: ecommerce-api-slo
+    rules:
+      - alert: EcommerceOrderSuccessRateLow
+        expr: |
+          (
+            sum(rate(ecommerce_order_place_requests_total{result="ok"}[5m]))
+            /
+            clamp_min(sum(rate(ecommerce_order_place_requests_total[5m])), 0.001)
+          ) < 0.98
+        for: 10m
+        labels:
+          severity: warning
+          service: ecommerce-backend
+        annotations:
+          summary: "Order success rate below 98%"
+          description: "Order placement success ratio in last 5m is below threshold."
+
+  - name: ecommerce-outbox
+    rules:
+      - alert: EcommerceOutboxDelayHigh
+        expr: ecommerce_outbox_runtime{metric="oldest_pending_age_seconds"} > 120
+        for: 5m
+        labels:
+          severity: warning
+          service: ecommerce-backend
+        annotations:
+          summary: "Outbox oldest pending event delay is high"
+          description: "Oldest pending outbox event age exceeded 120 seconds for 5 minutes."
+
+      - alert: EcommerceDLQBacklogHigh
+        expr: ecommerce_outbox_events{status="dead_letter_rows"} > 20
+        for: 10m
+        labels:
+          severity: critical
+          service: ecommerce-backend
+        annotations:
+          summary: "Dead-letter backlog is growing"
+          description: "Dead-letter queue rows exceeded 20 for 10 minutes."
+
+  - name: ecommerce-admin-command
+    rules:
+      - alert: EcommerceAdminCommandWaitTimeoutSpike
+        expr: sum(rate(ecommerce_admin_command_wait_total{result="timeout"}[5m])) > 0.02
+        for: 10m
+        labels:
+          severity: warning
+          service: ecommerce-backend
+        annotations:
+          summary: "Admin command wait timeout spike"
+          description: "Admin command idempotency wait timeout rate is above threshold."
+
+      - alert: EcommerceAdminCommandWaitCanceledSpike
+        expr: sum(rate(ecommerce_admin_command_wait_total{result="canceled"}[5m])) > 0.01
+        for: 10m
+        labels:
+          severity: warning
+          service: ecommerce-backend
+        annotations:
+          summary: "Admin command wait canceled spike"
+          description: "Admin command waits are frequently canceled (context/timeout)."
