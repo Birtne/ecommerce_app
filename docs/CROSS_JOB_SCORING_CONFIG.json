@@ -1,0 +1,92 @@
+{
+  "version": 2,
+  "defaults": {
+    "domain_penalties": {
+      "coverage": {
+        "warning_penalty": 12,
+        "critical_penalty": 30
+      },
+      "bench": {
+        "warning_penalty": 10,
+        "critical_penalty": 28
+      },
+      "soak": {
+        "warning_penalty": 10,
+        "critical_penalty": 30
+      },
+      "nightly": {
+        "warning_penalty": 8,
+        "critical_penalty": 22
+      }
+    },
+    "trend": {
+      "history_limit": 30,
+      "consecutive_n": 3,
+      "score_step": 5,
+      "domain_score_step": 5
+    }
+  },
+  "profiles": {
+    "ci": {
+      "trend": {
+        "history_limit": 20,
+        "consecutive_n": 3,
+        "score_step": 5,
+        "domain_score_step": 5
+      }
+    },
+    "nightly": {
+      "trend": {
+        "history_limit": 40,
+        "consecutive_n": 3,
+        "score_step": 4,
+        "domain_score_step": 4
+      },
+      "domain_penalties": {
+        "nightly": {
+          "warning_penalty": 10,
+          "critical_penalty": 26
+        }
+      }
+    }
+  },
+  "branch_overrides": [
+    {
+      "pattern": "^main$",
+      "overrides": {
+        "domain_penalties": {
+          "coverage": {
+            "warning_penalty": 11,
+            "critical_penalty": 28
+          },
+          "bench": {
+            "warning_penalty": 9,
+            "critical_penalty": 26
+          }
+        }
+      }
+    },
+    {
+      "pattern": "^release/",
+      "overrides": {
+        "domain_penalties": {
+          "coverage": {
+            "warning_penalty": 16,
+            "critical_penalty": 34
+          },
+          "bench": {
+            "warning_penalty": 14,
+            "critical_penalty": 32
+          },
+          "soak": {
+            "warning_penalty": 13,
+            "critical_penalty": 34
+          }
+        },
+        "trend": {
+          "score_step": 4
+        }
+      }
+    }
+  ]
+}
