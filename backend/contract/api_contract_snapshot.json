@@ -1,0 +1,42 @@
+{
+  "post_order_keys": [
+    "address",
+    "amount",
+    "idempotent_replay",
+    "order_id",
+    "status",
+    "user_id"
+  ],
+  "list_orders_root_keys": [
+    "items",
+    "next_cursor",
+    "page",
+    "page_size",
+    "total"
+  ],
+  "order_detail_keys": [
+    "address",
+    "amount",
+    "created_at",
+    "idempotency_created_at",
+    "idempotency_key",
+    "item_count",
+    "items",
+    "order_id",
+    "status",
+    "user_id"
+  ],
+  "outbox_health_keys": [
+    "db_stats",
+    "runtime_stats"
+  ],
+  "metrics_required_substrings": [
+    "ecommerce_order_placed_total",
+    "ecommerce_order_place_requests_total",
+    "ecommerce_order_place_duration_seconds",
+    "ecommerce_outbox_publish_total",
+    "ecommerce_outbox_publish_duration_seconds",
+    "ecommerce_outbox_events",
+    "ecommerce_outbox_runtime"
+  ]
+}
