@@ -1,101 +1,76 @@
-# NovaMart - Centralized E-commerce Platform
+# NovaMart 电商平台
 
 <p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&pause=900&center=true&vCenter=true&width=900&lines=NovaMart%3A+Taobao-style+Centralized+Commerce+Platform;Go+%2B+Hertz+%2B+PostgreSQL+%2B+Redis+%2B+NATS;Idempotency%2C+Outbox%2C+Replay+Jobs%2C+Audit%2C+Metrics" alt="typing animation" />
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&pause=900&center=true&vCenter=true&width=900&lines=NovaMart+%7C+大型中心化电商项目;交易闭环+可靠性护栏+可观测性;Go+%2B+React+%2B+PostgreSQL+%2B+Redis+%2B+NATS" alt="typing animation" />
 </p>
 
 <p align="center">
   <img alt="Go" src="https://img.shields.io/badge/Go-1.22+-00ADD8?logo=go&logoColor=white">
   <img alt="React" src="https://img.shields.io/badge/React-18-20232A?logo=react">
-  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white">
+  <img alt="TS" src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white">
   <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-16-336791?logo=postgresql&logoColor=white">
   <img alt="Redis" src="https://img.shields.io/badge/Redis-7-DC382D?logo=redis&logoColor=white">
   <img alt="NATS" src="https://img.shields.io/badge/NATS-Messaging-27AAE1">
 </p>
 
-Taobao-style centralized e-commerce project, with completed core trade loop and reliability-focused engineering safeguards.
+## 一眼看懂
 
-## Highlights
+| 模块 | 状态 |
+|---|---|
+| 用户注册/登录 | ✅ |
+| 商品列表 + 缓存 | ✅ |
+| 购物车 | ✅ |
+| 下单幂等 | ✅ |
+| 订单列表/详情/筛选 | ✅ |
+| Outbox + 重放任务 | ✅ |
+| 审计日志 + 导出 | ✅ |
+| Prometheus 指标 | ✅ |
+| 支付/履约/售后 | ⏳ |
 
-- User registration/login with token sessions
-- Product browsing with Redis cache
-- Cart add/remove/query
-- Order placement with strict idempotency key
-- Order history list/detail with filters + cursor pagination
-- Outbox event publishing + replay jobs + failed retry
-- Admin audit logs + CSV export
-- Health and Prometheus metrics endpoints
-- CI quality gates and nightly trend checks
+## 业务流（图）
 
-## Tech Stack
-
-- Frontend: React + TypeScript + Vite
-- Backend: Go + CloudWeGo/Hertz
-- Data: PostgreSQL + Redis
-- Messaging: NATS
-- Infra: Docker Compose
-
-## Project Structure
-
-```text
-ecommerce_app/
-├── backend/      # Go APIs, domain, repository, services, migrations
-├── frontend/     # React storefront
-├── infra/        # Docker Compose + monitoring config
-├── scripts/      # CI/nightly health and trend checks
-└── docs/         # API contract, architecture, roadmap, runbooks
+```mermaid
+flowchart LR
+  A[用户登录] --> B[浏览商品]
+  B --> C[加入购物车]
+  C --> D[提交订单 Idempotency-Key]
+  D --> E[(PostgreSQL)]
+  E --> F[Outbox 事件]
+  F --> G[NATS]
+  F --> H[重放任务/失败重试]
+  H --> I[审计日志]
 ```
 
-## Quick Start
+## 架构图（图）
 
-1. Start infra:
+```mermaid
+graph TD
+  UI[Frontend React] --> API[Backend Go Hertz]
+  API --> PG[(PostgreSQL)]
+  API --> R[(Redis)]
+  API --> N[NATS]
+  API --> M[/metrics]
+  API --> O[/health/outbox]
+```
+
+## 3 步启动
 
 ```bash
 cd ecommerce_app
 make up
-```
-
-2. Start backend:
-
-```bash
-cd ecommerce_app
 make backend
-```
-
-3. Start frontend:
-
-```bash
-cd ecommerce_app
 make frontend
 ```
 
-4. Open:
+访问地址：
+- 前端：`http://localhost:5173`
+- 健康检查：`http://localhost:8080/health`
+- API：`http://localhost:8080/api/v1`
 
-- Frontend: `http://localhost:5173`
-- Backend Health: `http://localhost:8080/health`
-- API Base: `http://localhost:8080/api/v1`
-
-## API Example
-
-```bash
-curl http://localhost:8080/health
-curl http://localhost:8080/api/v1/products
-```
-
-Place order with idempotency key:
+## 常用命令
 
 ```bash
-curl -X POST http://localhost:8080/api/v1/orders \
-  -H "Authorization: Bearer <token>" \
-  -H "Idempotency-Key: demo-001" \
-  -H "Content-Type: application/json" \
-  -d '{"address":"Shanghai Pudong Road 1"}'
-```
-
-## Quality Gates
-
-```bash
-cd ecommerce_app
+# 质量门禁
 make lint
 make test
 make integration
@@ -104,23 +79,20 @@ make scope-check
 make frontend-drift-check
 ```
 
-## Monitoring and Reliability
+## 目录地图
 
-- Outbox health: `GET /health/outbox`
-- Metrics: `GET /metrics`
-- Replay threshold config: `docs/REPLAY_SOAK_THRESHOLDS.json`
-- Cross-job trend config: `docs/CROSS_JOB_SCORING_CONFIG.json`
-- Alerting runbook: `docs/ALERTING_RUNBOOK.md`
+```text
+ecommerce_app/
+├── backend/   # API + 服务 + 存储 + 迁移
+├── frontend/  # React 商城前端
+├── infra/     # docker-compose + 监控配置
+├── scripts/   # CI / Nightly 脚本
+└── docs/      # 架构、接口、路线图、运行手册
+```
 
-## Docs
+## 文档入口
 
-- Architecture: `docs/ARCHITECTURE.md`
-- API contract: `docs/API_CONTRACT.md`
-- Roadmap: `docs/ROADMAP.md`
-- Iteration notes: `docs/ITERATION_NOTES.md`
-
-## Roadmap (Current Focus)
-
-- Consolidate reliability and replay pipeline guardrails
-- Keep CI/nightly regression stable
-- Expand from trade loop into payment/fulfillment modules
+- 架构：`docs/ARCHITECTURE.md`
+- 接口：`docs/API_CONTRACT.md`
+- 路线图：`docs/ROADMAP.md`
+- 迭代记录：`docs/ITERATION_NOTES.md`
