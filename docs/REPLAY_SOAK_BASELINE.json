@@ -1,0 +1,7 @@
+{
+  "scenario": "replay_multi_job_command_conflict",
+  "request_p95_ms": 130.0,
+  "request_p99_ms": 180.0,
+  "process_p95_ms": 8.0,
+  "process_p99_ms": 20.0
+}
